@@ -155,10 +155,18 @@ class ApiGiftController extends ApiController
     /**
      * Get the list of gifts for the given contact.
      *
+     * @param Request $request
+     * @param $contactId
+     * @param string|null $status the status to filter by, or null to get all
+     *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Http\JsonResponse
      */
-    public function gifts(Request $request, $contactId)
+    public function gifts(Request $request, $contactId, $status = null)
     {
+        if (!in_array($status, [null, 'idea', 'offered', 'received'])) {
+            return $this->respondInvalidQuery();
+        }
+
         try {
             $contact = Contact::where('account_id', auth()->user()->account_id)
                 ->findOrFail($contactId);
@@ -167,9 +175,15 @@ class ApiGiftController extends ApiController
         }
 
         try {
-            $gifts = $contact->gifts()
-                    ->orderBy($this->sort, $this->sortDirection)
-                    ->paginate($this->getLimitPerPage());
+            $gifts = $contact->gifts();
+
+            if ($status) {
+                $gifts = $gifts->where('status', $status);
+            }
+
+            $gifts = $gifts
+                ->orderBy($this->sort, $this->sortDirection)
+                ->paginate($this->getLimitPerPage());
 
             return GiftResource::collection($gifts);
         } catch (QueryException $e) {

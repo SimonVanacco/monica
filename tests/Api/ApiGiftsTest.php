@@ -103,6 +103,40 @@ class ApiGiftsTest extends ApiTestCase
     }
 
     /** @test */
+    public function it_gets_all_the_gifts_of_a_contact_by_status()
+    {
+        $user = $this->signin();
+        $contact1 = factory(Contact::class)->create([
+            'account_id' => $user->account_id,
+        ]);
+        $gift1 = factory(Gift::class)->create([
+            'account_id' => $user->account_id,
+            'contact_id' => $contact1->id,
+            'status' => 'offered',
+        ]);
+        $gift2 = factory(Gift::class)->create([
+            'account_id' => $user->account_id,
+            'contact_id' => $contact1->id,
+            'status' => 'idea'
+        ]);
+
+        $response = $this->json('GET', '/api/contacts/'.$contact1->id.'/gifts/offered');
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
+            'data' => ['*' => $this->jsonGift],
+        ]);
+        $response->assertJsonFragment([
+            'object' => 'gift',
+            'id' => $gift1->id,
+        ]);
+        $response->assertJsonMissingExact([
+            'object' => 'gift',
+            'id' => $gift2->id,
+        ]);
+    }
+
+    /** @test */
     public function it_cant_get_all_the_gifts_of_an_invalid_contact()
     {
         $user = $this->signin();

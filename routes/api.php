@@ -99,7 +99,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
         // Gifts
         Route::apiResource('gifts', 'ApiGiftController');
-        Route::get('/contacts/{contact}/gifts', 'ApiGiftController@gifts');
+        Route::get('/contacts/{contact}/gifts/{status?}', 'ApiGiftController@gifts');
         Route::put('/gifts/{gift}/photo/{photo}', 'ApiGiftController@associate');
 
         // Debts
