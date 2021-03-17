@@ -66,6 +66,9 @@
         <!-- ADDITIONAL FIELDS -->
         <div v-show="displayMenu" class="bb b--gray-monica pv3 mb3">
           <ul class="list">
+            <li v-show="!displayDate" class="di pointer" :class="dirltr ? 'mr3' : 'ml3'">
+              <a href="" @click.prevent="displayDate = true">{{ $t('people.gifts_add_date') }}</a>
+            </li>
             <li v-show="!displayComment" class="di pointer" :class="dirltr ? 'mr3' : 'ml3'">
               <a href="" @click.prevent="displayComment = true">{{ $t('people.gifts_add_comment') }}</a>
             </li>
@@ -82,6 +85,18 @@
               <a href="" @click.prevent="() => { displayUpload = true; $refs.upload.showUploadZone(); }">{{ $t('people.gifts_add_photo') }}</a>
             </li>
           </ul>
+        </div>
+
+        <div v-if="displayDate" class="dt dt--fixed pb3 mb3 bb b--gray-monica">
+          <!-- COMMENT -->
+          <form-input
+            :id="'date'"
+            v-model="newGift.date"
+            :input-type="'date'"
+            :class="'dtc pr2'"
+            :title="$t('people.gifts_add_date')"
+            @submit="store"
+          />
         </div>
 
         <div v-if="displayComment" class="dt dt--fixed pb3 mb3 bb b--gray-monica">
@@ -247,6 +262,7 @@ export default {
   data() {
     return {
       photos: [],
+      displayDate: false,
       displayComment: false,
       displayUrl: false,
       displayAmount: false,
@@ -340,6 +356,7 @@ export default {
         this.newGift.date = null;
         this.hasRecipient = false;
       }
+      this.displayDate = this.gift ? this.gift.date : false;
       this.displayComment = this.gift ? this.gift.comment : false;
       this.displayUrl = this.gift ? this.gift.url : false;
       this.displayAmount = this.gift ? this.gift.amount != '' : false;

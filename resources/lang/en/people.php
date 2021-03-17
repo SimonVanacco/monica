@@ -314,6 +314,7 @@ return [
     'gifts_add_gift_name' => 'Gift name',
     'gifts_add_link' => 'Link to the web page (optional)',
     'gifts_add_value' => 'Value (optional)',
+    'gifts_add_date' => 'Date (optional)',
     'gifts_add_comment' => 'Comment (optional)',
     'gifts_add_recipient' => 'Recipient (optional)',
     'gifts_add_recipient_field' => 'Recipient',

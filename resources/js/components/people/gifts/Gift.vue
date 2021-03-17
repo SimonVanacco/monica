@@ -12,6 +12,7 @@
           <strong>{{ gift.name }}</strong>
         </a>
         <strong v-else>{{ gift.name }}</strong>
+        <span v-if="gift.date">({{ gift.date | moment }})</span>
       </span>
 
       <span v-if="gift.recipient && gift.recipient.complete_name">
@@ -66,11 +67,18 @@
 <script>
 
 import { SweetModal } from 'sweet-modal-vue';
+import moment from 'moment';
 
 export default {
 
   components: {
     SweetModal,
+  },
+
+  filters: {
+    moment: function (date) {
+      return moment.utc(date).format('LL');
+    }
   },
 
   props: {
